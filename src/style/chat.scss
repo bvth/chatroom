@@ -1,0 +1,55 @@
+.chat{
+	display: inline-block;
+	height: 100%;
+	width: 80%;
+	padding: 1%;
+	&_log{
+		height: 83%;
+		border: 1px solid black;
+		margin-bottom: 2%;
+		overflow-y: auto;
+		padding: 10px;
+		&_message{
+			height: auto;
+			width: auto;
+			&_content{
+				border-radius: 5px;
+				background: #7bc5db;
+				padding: 6px 9px;
+				display: inline-block;
+				min-width: 57px;
+			}
+		}
+	}
+	&_textarea{
+		height: 13%;
+		margin: 1% 0;
+		textarea{
+			width: 90%;
+			margin: 0;
+			height: 100%;
+			resize: none;
+			border-top-left-radius: 5px;
+			border-bottom-left-radius: 5px;
+			@media only screen and (max-width: 768px){
+				width: 85%;
+			}
+		}
+		button{
+			float: right;
+			height: 100%;
+			width: 10%;
+			border-radius: 0;
+			border-top-right-radius: 5px;
+			border-bottom-right-radius: 5px;
+			@media screen and (max-width: 768px){
+				width: 15%;
+			}
+		}
+	}
+	@media only screen and (max-width : 768px) {
+		height: 80%;
+		width: 100%;
+		padding: 0;
+	}
+}
