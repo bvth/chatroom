@@ -26,18 +26,20 @@ app.get('*', function(req, res, next) {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-const PORT = process.env.PORT || 3000;
-
 io.on('connection', function(socket){
 	console.log("connected");
 	socket.on('new-message',function(msg){
 		console.log(msg);
 		io.emit('receive-message',msg);
+    // io.broadcast.emit('receive-message',msg);
+
 	})
   socket.on('test',function(){
     console.log("mounted");
   })
 });
+
+const PORT = process.env.PORT || 3000;
 
 http.listen(PORT,function(){
 	console.log("we are live");

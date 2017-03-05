@@ -15,13 +15,15 @@ function mapStateToProps(store){
 		userName : store.user.name
 	}
 }
+//change to your hosting IP before running
 
+let ip = "192.168.1.190";
 class Chat extends React.Component {
 	constructor(){
 		super();
 		this.state={
 			message:[],
-			socket: io('http://localhost:3000')
+			socket: io.connect('http://'+ip+':3000')
 		}
 	}
 	componentDidMount(){
@@ -50,8 +52,8 @@ class Chat extends React.Component {
 	logMessage(name,content,i){
 		if(!name){
 			return(
-				<div className="chat_log_message">
-				<p key={i} className="chat_log_message_content">
+				<div key={i} className="chat_log_message">
+				<p  className="chat_log_message_content">
 					<span className="chat_log_name">Guest</span><br/>
 					{content}
 				</p>
@@ -60,8 +62,8 @@ class Chat extends React.Component {
 		}
 		else{
 			return(
-				<div className="chat_log_message">
-				<p key={i} className="chat_log_message_content">
+				<div key={i} className="chat_log_message">
+				<p  className="chat_log_message_content">
 					<span className="chat_log_name">{name}</span><br/>
 					{content}
 				</p>
