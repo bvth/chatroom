@@ -30,7 +30,7 @@ io.on('connection', function(socket){
 	console.log("connected");
 	socket.on('new-message',function(msg){
 		console.log(msg);
-		io.emit('receive-message',msg);
+		io.emit('receive-message',JSON.parse(msg));
     // io.broadcast.emit('receive-message',msg);
 
 	})

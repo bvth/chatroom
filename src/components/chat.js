@@ -16,8 +16,8 @@ function mapStateToProps(store){
 	}
 }
 //change to your hosting IP before running
+const ip = "192.168.1.190";
 
-let ip = "192.168.1.190";
 class Chat extends React.Component {
 	constructor(){
 		super();
@@ -25,6 +25,7 @@ class Chat extends React.Component {
 			message:[],
 			socket: io.connect('http://'+ip+':3000')
 		}
+		this.Submit = this.submitMessage.bind(this);
 	}
 	componentDidMount(){
 		var self = this
@@ -35,7 +36,15 @@ class Chat extends React.Component {
 			console.log(msg);
 		})
 	}
-	submitMessage(){
+	// handleKeypress(e){
+	// 	if (e.which == 13 && !e.shiftKey){
+	//       e.preventDefault();
+	//       document.getElementById("chat_textarea").getDOMNode().dispatchEvent(new Event("submit"));
+	//     }
+	// }
+	submitMessage(event){
+		event.preventDefault();
+		console.log(this.state.message);
 		this.props.dispatch(msg.submitMessage(this.refs.mess.value));
 		let newMessage = this.state.message.slice();
 		newMessage.push({
@@ -45,8 +54,8 @@ class Chat extends React.Component {
 		// this.setState({
 		// 	message: newMessage
 		// })
-		console.log(this.state.message);
-		this.state.socket.emit("new-message", newMessage[newMessage.length-1]);
+		
+		this.state.socket.emit("new-message", JSON.stringify(newMessage[newMessage.length-1]));
 		this.refs.mess.value = "";
 	}
 	logMessage(name,content,i){
@@ -81,12 +90,13 @@ class Chat extends React.Component {
 						this.logMessage(messages[i].name,messages[i].content,i)
 					)}
 				</div>
-				<form className="chat_textarea">
-					<textarea ref="mess" placeholder="text message" autoFocus></textarea>
-					<Button 
-					bsStyle="primary" bsSize="small" 
-					onClick={this.submitMessage.bind(this)}>
-						Send
+				<form className="chat_textarea" onSubmit={this.Submit} id="chat_textarea">
+					<textarea ref="mess" placeholder="text message" ></textarea>
+										<Button 
+						bsStyle="primary" 
+						bsSize="small" 
+						type="submit">
+							Send
 					</Button>
 				</form>
 			</div>
