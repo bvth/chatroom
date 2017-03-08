@@ -5,7 +5,6 @@ import _ from "lodash"
 import * as msg from "../actions/messageActions"
 import io from "socket.io-client"
 
-
 require('../style/chat.scss')
 
 function mapStateToProps(store){
@@ -33,7 +32,7 @@ class Chat extends React.Component {
 			let newMessage = self.state.message.slice();
 			newMessage.push(msg);
 			self.setState({message:newMessage});
-			console.log(msg);
+			// console.log(msg);
 		})
 	}
 	// handleKeypress(e){
@@ -44,18 +43,45 @@ class Chat extends React.Component {
 	// }
 	submitMessage(event){
 		event.preventDefault();
-		console.log(this.state.message);
+		// console.log(this.state.message);
 		this.props.dispatch(msg.submitMessage(this.refs.mess.value));
 		let newMessage = this.state.message.slice();
 		newMessage.push({
 			name: this.props.userName,
 			content: this.refs.mess.value
 		})
+		// var data = {
+		// 	'name': newMessage[newMessage.length-1].name,
+		// 	'content': newMessage[newMessage.length-1].content
+		// }
+		// var formBody = [];
+  //       for (var property in data) {
+  //           var encodedKey = encodeURIComponent(property);
+  //           var encodedValue = encodeURIComponent(data[property]);
+  //           formBody.push(encodedKey + "=" + encodedValue);
+  //       }
+  //       formBody = formBody.join("&");
+		fetch('/send',{
+			method: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'content-type':'application/json',
+				'cache-control': 'no-cache'
+			},
+			body: JSON.stringify({
+				name: newMessage[newMessage.length-1].name,
+				content: newMessage[newMessage.length-1].content
+			})
+		}).then(function(response){
+			return response.json()
+		}).then(function(body){
+			console.log("hehe",body);
+		})
 		// this.setState({
 		// 	message: newMessage
 		// })
 		
-		this.state.socket.emit("new-message", JSON.stringify(newMessage[newMessage.length-1]));
+		this.state.socket.emit("new-message",newMessage[newMessage.length-1]);
 		this.refs.mess.value = "";
 	}
 	logMessage(name,content,i){
