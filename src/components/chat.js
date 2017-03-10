@@ -5,6 +5,8 @@ import _ from "lodash"
 import * as msg from "../actions/messageActions"
 import io from "socket.io-client"
 
+
+
 require('../style/chat.scss')
 
 function mapStateToProps(store){
@@ -16,6 +18,7 @@ function mapStateToProps(store){
 }
 //change to your hosting IP before running
 const ip = "192.168.1.190";
+let newMessage;
 
 class Chat extends React.Component {
 	constructor(){
@@ -26,14 +29,25 @@ class Chat extends React.Component {
 		}
 		this.Submit = this.submitMessage.bind(this);
 	}
+	componentWillMount(){
+		newMessage = this.state.message.slice();
+		fetch('/get',{method:'POST'})
+			.then(function(res){
+				return res.json()
+			}).then((body)=>{
+				_.map(body,(x,i)=>
+					newMessage.push({'name':body[i].name, 'content':body[i].content})
+				)
+				this.setState({message : newMessage})
+			})
+	}
 	componentDidMount(){
-		var self = this
-		self.state.socket.on("receive-message",function(msg){
-			let newMessage = self.state.message.slice();
+		// let newMessage = this.state.message.slice();
+		this.state.socket.on("receive-message",(msg)=>{
 			newMessage.push(msg);
-			self.setState({message:newMessage});
-			// console.log(msg);
+			this.setState({message:newMessage})
 		})
+		this.autoScroll();
 	}
 	// handleKeypress(e){
 	// 	if (e.which == 13 && !e.shiftKey){
@@ -41,26 +55,18 @@ class Chat extends React.Component {
 	//       document.getElementById("chat_textarea").getDOMNode().dispatchEvent(new Event("submit"));
 	//     }
 	// }
+	componentDidUpdate(){
+		this.autoScroll();
+	}
 	submitMessage(event){
 		event.preventDefault();
-		// console.log(this.state.message);
 		this.props.dispatch(msg.submitMessage(this.refs.mess.value));
-		let newMessage = this.state.message.slice();
-		newMessage.push({
-			name: this.props.userName,
-			content: this.refs.mess.value
-		})
-		// var data = {
-		// 	'name': newMessage[newMessage.length-1].name,
-		// 	'content': newMessage[newMessage.length-1].content
-		// }
-		// var formBody = [];
-  //       for (var property in data) {
-  //           var encodedKey = encodeURIComponent(property);
-  //           var encodedValue = encodeURIComponent(data[property]);
-  //           formBody.push(encodedKey + "=" + encodedValue);
-  //       }
-  //       formBody = formBody.join("&");
+		// let newMessage = this.state.message.slice();
+		// newMessage.push({
+		// 	name: this.props.userName,
+		// 	content: this.refs.mess.value
+		// })
+		//send and store messages via REST API
 		fetch('/send',{
 			method: 'POST',
 			headers: {
@@ -69,20 +75,32 @@ class Chat extends React.Component {
 				'cache-control': 'no-cache'
 			},
 			body: JSON.stringify({
-				name: newMessage[newMessage.length-1].name,
-				content: newMessage[newMessage.length-1].content
+				name: this.props.userName,
+				content: this.refs.mess.value
 			})
 		}).then(function(response){
 			return response.json()
-		}).then(function(body){
-			console.log("hehe",body);
-		})
-		// this.setState({
-		// 	message: newMessage
-		// })
-		
-		this.state.socket.emit("new-message",newMessage[newMessage.length-1]);
+		})//.then((body)=>{
+				// _.map(body,(x,i)=>
+				// 	newMessage.push({'name':body[i].name, 'content':body[i].content})
+				// )
+				// this.setState({message : newMessage})
+				// this.state.socket.emit("new-message",{
+				// 	name: this.props.userName,
+				// 	content: this.refs.mess.value
+				// })
+		//})
+
+		this.state.socket.emit("new-message",{
+			name: this.props.userName,
+			content: this.refs.mess.value
+		});
 		this.refs.mess.value = "";
+	}
+
+	autoScroll(){
+		let dummy = document.getElementById('dummy_div');
+		dummy.scrollIntoView();
 	}
 	logMessage(name,content,i){
 		if(!name){
@@ -107,20 +125,21 @@ class Chat extends React.Component {
 		}
 	}
 	render(){
-
-		let messages = this.state.message
+		let messages = this.state.message;
+		console.log(this.state.message);
 		return(
 			<div className="chat">
-				<div className="chat_log">
+				<div className="chat_log" id="chat_log">
 					{_.map(messages,(x,i)=>
 						this.logMessage(messages[i].name,messages[i].content,i)
 					)}
+					<div id="dummy_div"></div>
 				</div>
 				<form className="chat_textarea" onSubmit={this.Submit} id="chat_textarea">
-					<textarea ref="mess" placeholder="text message" ></textarea>
-										<Button 
-						bsStyle="primary" 
-						bsSize="small" 
+					<input ref="mess" placeholder="text message"/>
+					<Button
+						bsStyle="primary"
+						bsSize="small"
 						type="submit">
 							Send
 					</Button>

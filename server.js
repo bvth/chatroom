@@ -47,14 +47,11 @@ REST.prototype.configureExpress = function() {
 
 io.on('connection', function(socket){
 	console.log("connected");
+  var clientIpAddress= socket.request.socket.remoteAddress;
+  console.log(clientIpAddress);
 	socket.on('new-message',function(msg){
 		console.log(msg);
-    // chatLog.data.push(msg);
-    // console.log(chatLog.data);
 		io.emit('receive-message',msg);
-    // console.log(chatLog.data[chatLog.data.length-1]);
-    // io.broadcast.emit('receive-message',msg);
-
 	})
   socket.on('test',function(){
     console.log("mounted");

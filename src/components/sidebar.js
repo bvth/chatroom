@@ -14,9 +14,6 @@ function mapStateToProps(store){
 }
 
 class Sidebar extends React.Component {
-	// componentWillMount(){
-	// 	this.props.dispatch(user.fetchUser());
-	// }
 	submitName(){
 		this.props.dispatch(user.submitName(this.refs.name.value))
 	}
@@ -27,8 +24,10 @@ class Sidebar extends React.Component {
 		if(!this.props.userName){
 			return (
 				<div className='sidebar'>
-					<input ref="name" type="text" placeholder="your name" />
-					<Button bsStyle="info" bsSize="sm" onClick={this.submitName.bind(this)}>Save name</Button>
+					<form className="sidebar_form" onSubmit={this.submitName.bind(this)}>
+						<input ref="name" type="text" placeholder="your name" />
+						<Button bsStyle="info" bsSize="sm" type="submit">Save name</Button>
+					</form>
 				</div>
 			)
 		}
