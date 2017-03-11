@@ -3,9 +3,8 @@ import {Button} from "react-bootstrap"
 import {connect} from "react-redux"
 import _ from "lodash"
 import * as msg from "../actions/messageActions"
+import {submitIP} from "../actions/userActions"
 import io from "socket.io-client"
-
-
 
 require('../style/chat.scss')
 
@@ -13,19 +12,19 @@ function mapStateToProps(store){
 	return{
 		message: store.message.message,
 		messageSubmit: store.message.submit,
-		userName : store.user.name
+		userName : store.user.name,
+		userIP: store.user.ip,
+		ipSubmit: store.user.submitIP
 	}
 }
-//change to your hosting IP before running
-const ip = "192.168.1.190";
+// const ip = "192.168.1.190";
 let newMessage;
-
 class Chat extends React.Component {
 	constructor(){
 		super();
 		this.state={
 			message:[],
-			socket: io.connect('http://'+ip+':3000')
+			socket:io.connect()	,
 		}
 		this.Submit = this.submitMessage.bind(this);
 	}
@@ -35,17 +34,20 @@ class Chat extends React.Component {
 			.then(function(res){
 				return res.json()
 			}).then((body)=>{
-				_.map(body,(x,i)=>
-					newMessage.push({'name':body[i].name, 'content':body[i].content})
+				_.map(body.doc,(x,i)=>
+					newMessage.push({'name':body.doc[i].name, 'content':body.doc[i].content})
 				)
-				this.setState({message : newMessage})
+				this.setState({message : newMessage,socket:io.connect('http://'+body.host+':3000')})
+				console.log("hosting IP "+body.host);
+				console.log(body.IP);
+				this.props.dispatch(submitIP(body.IP));
 			})
 	}
 	componentDidMount(){
 		// let newMessage = this.state.message.slice();
 		this.state.socket.on("receive-message",(msg)=>{
 			newMessage.push(msg);
-			this.setState({message:newMessage})
+			this.setState({message:newMessage});
 		})
 		this.autoScroll();
 	}
@@ -93,7 +95,7 @@ class Chat extends React.Component {
 
 		this.state.socket.emit("new-message",{
 			name: this.props.userName,
-			content: this.refs.mess.value
+			content: this.refs.mess.value,
 		});
 		this.refs.mess.value = "";
 	}
@@ -126,7 +128,7 @@ class Chat extends React.Component {
 	}
 	render(){
 		let messages = this.state.message;
-		console.log(this.state.message);
+		// console.log(this.state.message);
 		return(
 			<div className="chat">
 				<div className="chat_log" id="chat_log">

@@ -10,6 +10,12 @@ export function submitName(name){
 		payload: name
 	}
 }
+export function submitIP(ip){
+	return{
+		type:'SUBMIT_IP',
+		payload: ip
+	}
+}
 export function changeName(){
 	return{
 		type: 'CHANGE_NAME'

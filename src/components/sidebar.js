@@ -9,13 +9,15 @@ require ('../style/sidebar.scss')
 function mapStateToProps(store){
 	return{
 		userName: store.user.name,
-		userSubmit: store.user.submit
+		userSubmit: store.user.submit,
+		userIP: store.user.ip
 	}
 }
 
 class Sidebar extends React.Component {
 	submitName(){
-		this.props.dispatch(user.submitName(this.refs.name.value))
+		this.props.dispatch(user.submitName(this.refs.name.value));
+		console.log(this.props);
 	}
 	changeName(){
 		this.props.dispatch(user.changeName());

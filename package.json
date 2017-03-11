@@ -23,6 +23,7 @@
     "http": "0.0.0",
     "jsonfile": "^2.4.0",
     "lodash": "^4.17.4",
+    "nearby-big-cities": "^1.0.0",
     "nedb": "^1.8.0",
     "node-sass": "^4.5.0",
     "react": "^15.4.2",

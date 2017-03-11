@@ -1,15 +1,24 @@
 export default function reducer(state={
 	name: null,
-	submit:false,
-	change:false
+	submitName:false,
+	changeName:false,
+	ip:null,
+	submitIP:false
 },action){
 
 	switch (action.type){
 		case "SUBMIT_NAME":{
 			return{
-				...state, 
+				...state,
 				name: action.payload,
 				submit:true
+			}
+		}
+		case "SUBMIT_IP":{
+			return{
+				...state,
+				ip: action.payload,
+				submitIP: true
 			}
 		}
 		case "FETCH_USER":{

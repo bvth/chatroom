@@ -19,6 +19,9 @@
 				display: inline-block;
 				min-width: 57px;
 			}
+			&_content.right{
+				float: right;
+			}
 		}
 	}
 	&_textarea{
@@ -52,7 +55,4 @@
 		width: 100%;
 		padding: 0;
 	}
-}
-#dummy_div{
-	height: 2px;
 }
