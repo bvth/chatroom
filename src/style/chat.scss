@@ -19,9 +19,9 @@
 				display: inline-block;
 				min-width: 57px;
 			}
-			&_content.right{
-				float: right;
-			}
+		}
+		&_message.right{
+			text-align: right;
 		}
 	}
 	&_textarea{

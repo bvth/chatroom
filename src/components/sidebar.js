@@ -1,6 +1,7 @@
 import React from "react"
 import { connect } from "react-redux"
 import {Button} from "react-bootstrap"
+import _ from "lodash"
 
 import * as user from "../actions/userActions"
 
@@ -10,13 +11,25 @@ function mapStateToProps(store){
 	return{
 		userName: store.user.name,
 		userSubmit: store.user.submit,
-		userIP: store.user.ip
+		nameGen: store.user.auto,
 	}
 }
 
 class Sidebar extends React.Component {
+	componentWillMount(){
+		this.generateName();
+	}
 	submitName(){
 		this.props.dispatch(user.submitName(this.refs.name.value));
+		console.log(this.props);
+	}
+	generateName(){
+		let nameArray=[];
+		_.times(4,()=>{
+			nameArray.push([0,1,2,3,4,5,7,8,9][Math.floor(Math.random()*9)]);
+		})
+		let name = "Guest"+	nameArray.join("");
+		this.props.dispatch(user.genName(name));
 		console.log(this.props);
 	}
 	changeName(){

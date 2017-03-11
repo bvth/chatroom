@@ -10,10 +10,10 @@ export function submitName(name){
 		payload: name
 	}
 }
-export function submitIP(ip){
+export function genName(name){
 	return{
-		type:'SUBMIT_IP',
-		payload: ip
+		type: 'GEN_NAME',
+		payload: name
 	}
 }
 export function changeName(){

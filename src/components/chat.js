@@ -13,8 +13,6 @@ function mapStateToProps(store){
 		message: store.message.message,
 		messageSubmit: store.message.submit,
 		userName : store.user.name,
-		userIP: store.user.ip,
-		ipSubmit: store.user.submitIP
 	}
 }
 // const ip = "192.168.1.190";
@@ -40,16 +38,20 @@ class Chat extends React.Component {
 				this.setState({message : newMessage,socket:io.connect('http://'+body.host+':3000')})
 				console.log("hosting IP "+body.host);
 				console.log(body.IP);
-				this.props.dispatch(submitIP(body.IP));
 			})
 	}
 	componentDidMount(){
 		// let newMessage = this.state.message.slice();
 		this.state.socket.on("receive-message",(msg)=>{
-			newMessage.push(msg);
-			this.setState({message:newMessage});
+			// newMessage.push(msg);
+			// this.setState({message:newMessage});
+			this.appendMessage(msg);
 		})
 		this.autoScroll();
+	}
+	appendMessage(msg){
+		msg.name == this.props.userName?
+		document.getElementById('chat_log').innerHTML+= '<div class="chat_log_message right"><p  class="chat_log_message_content right"><span class="chat_log_name">'+msg.name+'</span><br/>'+msg.content+'</p></div>' : document.getElementById('chat_log').innerHTML+= '<div class="chat_log_message"><p  class="chat_log_message_content"><span class="chat_log_name">'+msg.name+'</span><br/>'+msg.content+'</p></div>'
 	}
 	// handleKeypress(e){
 	// 	if (e.which == 13 && !e.shiftKey){

@@ -1,9 +1,8 @@
 export default function reducer(state={
 	name: null,
 	submitName:false,
+	auto: false,
 	changeName:false,
-	ip:null,
-	submitIP:false
 },action){
 
 	switch (action.type){
@@ -11,14 +10,15 @@ export default function reducer(state={
 			return{
 				...state,
 				name: action.payload,
-				submit:true
+				submit:true,
+				auto:false
 			}
 		}
-		case "SUBMIT_IP":{
+		case "GEN_NAME":{
 			return{
 				...state,
-				ip: action.payload,
-				submitIP: true
+				name: action.payload,
+				auto: true
 			}
 		}
 		case "FETCH_USER":{
