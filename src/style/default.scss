@@ -1,5 +1,5 @@
 html,body{
-	height: 100%; 
+	height: 100%;
 	padding: 0;
 	margin: 0;
 }
@@ -9,4 +9,7 @@ div{
 #app{
 	position: absolute;
 	width: 100%;
+}
+#dummy_div{
+	height: 2px;
 }

@@ -1,15 +1,26 @@
 export default function reducer(state={
 	name: null,
-	submit:false,
-	change:false
+	submitName:false,
+	auto: false,
+	changeName:false,
+	location: null,
+	getLocation: true
 },action){
 
 	switch (action.type){
 		case "SUBMIT_NAME":{
 			return{
-				...state, 
+				...state,
 				name: action.payload,
-				submit:true
+				submit:true,
+				auto:false
+			}
+		}
+		case "GEN_NAME":{
+			return{
+				...state,
+				name: action.payload,
+				auto: true
 			}
 		}
 		case "FETCH_USER":{
@@ -25,6 +36,13 @@ export default function reducer(state={
 				name: null,
 				submit: false,
 				change: true
+			}
+		}
+		case "GET_LOCATION":{
+			return{
+				...state,
+				location: action.payload,
+				getLocation: true
 			}
 		}
 	}

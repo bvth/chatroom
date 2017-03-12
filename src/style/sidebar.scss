@@ -1,34 +1,48 @@
-.sidebar{
-	display: inline-block;
-	width: 20%;
-	height: 100%;
-	border: 1px solid black;
-	float: left;
-	background: #b11818;
-	padding: 15px;
-	color: #fff;
-	input{
-		color: #000;
-		width:100%;
-		@media only screen and (max-width: 768px){
-			width: auto;
+.col-sm-3.col-xs-12{
+	padding: 5px;
+	.sidebar{
+		// display: inline-block;
+		// width: 20%;
+		height: 100%;
+		border: 1px solid black;
+		background: #b11818;
+		padding: 15px;
+		color: #fff;
+		input{
+			color: #000;
+			width:100%;
+			@media only screen and (max-width: 768px){
+				width: auto;
+			}
+		}
+		div{
+			display: inline-block;
+			margin: 5px;
+		}
+		&_hold{
+			height:auto;
+			&_name{
+				font-size: 30px;
+				display: inline-block;
+				@media only screen and (max-width: 992px){
+					font-size: 22px;
+				}
+			}
+		}
+		button{
+			margin: 0 5px;
+		}
+		@media only screen and (max-width: 768px ){
+			display: block;
+			width: 100%;
+			float: none;
+			padding: 5px 15px;
+		}
+		@media only screen and (min-width: 768px){
+			text-align: center;
 		}
 	}
-	&_name{
-		font-size: 30px;
-		@media only screen and (max-width: 480px){
-			font-size: 22px;
-		}
-	}
-	@media only screen and (max-width: 768px ){
-		display: block;
-		width: 100%;
+	@media only screen and (max-width: 768px){
 		height: 15%;
-		float: none;
-		padding: 5px 15px;
 	}
-	@media only screen and (min-width: 768px){
-		text-align: center;
-	}
-
 }
