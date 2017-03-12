@@ -1,3 +1,5 @@
+import 'whatwg-fetch';
+
 import React from "react"
 import {Button} from "react-bootstrap"
 import {connect} from "react-redux"
@@ -16,7 +18,6 @@ function mapStateToProps(store){
 		userLocation: store.user.location
 	}
 }
-// const ip = "192.168.1.190";
 let newMessage;
 class Chat extends React.Component {
 	constructor(){
@@ -37,21 +38,14 @@ class Chat extends React.Component {
 					newMessage.push({'name':body.doc[i].name, 'content':body.doc[i].content})
 				)
 				this.setState({message : newMessage,socket:io.connect('http://'+body.host+':3000')})
-				console.log("hosting IP "+body.host);
-				console.log(body.IP);
+				// console.log("hosting IP "+body.host);
+				// console.log(body.IP);
 			})
 	}
 	componentDidMount(){
-		// let newMessage = this.state.message.slice();
 		this.state.socket.on("receive-message",(msg)=>{
-			// newMessage.push(msg);
-			// this.setState({message:newMessage});
 			this.appendMessage(msg);
 		})
-	}
-	checkTyping(){
-		document.getElementById('chat_log').innerHTML += "<h3 id='type'>...typing...</h3>";
-		setTimeout(document.getElementById('type').outerHTML);
 	}
 	appendMessage(msg){
 		var p;
@@ -68,15 +62,6 @@ class Chat extends React.Component {
 				msg.name+'</span><br/>'+msg.content+'<p>'+p+'</p></div>'
 		this.autoScroll();
 	}
-	// handleKeypress(e){
-	// 	if (e.which == 13 && !e.shiftKey){
-	//       e.preventDefault();
-	//       document.getElementById("chat_textarea").getDOMNode().dispatchEvent(new Event("submit"));
-	//     }
-	// }
-	// componentDidUpdate(){
-	// 	this.autoScroll();
-	// }
 	submitMessage(event){
 		event.preventDefault();
 		this.props.dispatch(msg.submitMessage(this.refs.mess.value));
@@ -94,17 +79,7 @@ class Chat extends React.Component {
 			})
 		}).then(function(response){
 			return response.json()
-		})//.then((body)=>{
-				// _.map(body,(x,i)=>
-				// 	newMessage.push({'name':body[i].name, 'content':body[i].content})
-				// )
-				// this.setState({message : newMessage})
-				// this.state.socket.emit("new-message",{
-				// 	name: this.props.userName,
-				// 	content: this.refs.mess.value
-				// })
-		//})
-
+		})
 		this.state.socket.emit("new-message",{
 			name: this.props.userName,
 			content: this.refs.mess.value,
