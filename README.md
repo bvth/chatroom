@@ -9,3 +9,4 @@ $ npm install
 ```
 $ npm start
 ```
+The application will start at `localhost:3000`
