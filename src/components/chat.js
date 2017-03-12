@@ -13,6 +13,7 @@ function mapStateToProps(store){
 		message: store.message.message,
 		messageSubmit: store.message.submit,
 		userName : store.user.name,
+		userLocation: store.user.location
 	}
 }
 // const ip = "192.168.1.190";
@@ -47,11 +48,25 @@ class Chat extends React.Component {
 			// this.setState({message:newMessage});
 			this.appendMessage(msg);
 		})
-		this.autoScroll();
+	}
+	checkTyping(){
+		document.getElementById('chat_log').innerHTML += "<h3 id='type'>...typing...</h3>";
+		setTimeout(document.getElementById('type').outerHTML);
 	}
 	appendMessage(msg){
+		var p;
+		if(!msg.location){
+			p="";
+		}
+		else{
+			p= '<p class="chat_log_message_location">'+msg.location+'</p>';
+		}
 		msg.name == this.props.userName?
-		document.getElementById('chat_log').innerHTML+= '<div class="chat_log_message right"><p  class="chat_log_message_content right"><span class="chat_log_name">'+msg.name+'</span><br/>'+msg.content+'</p></div>' : document.getElementById('chat_log').innerHTML+= '<div class="chat_log_message"><p  class="chat_log_message_content"><span class="chat_log_name">'+msg.name+'</span><br/>'+msg.content+'</p></div>'
+		document.getElementById('chat_log').innerHTML+= '<div id="new_message" class="chat_log_message right">'+p+'<p  class="chat_log_message_content right"><span class="chat_log_name">'+
+			msg.name+'</span><br/>'+msg.content+'</p></div>' :
+			document.getElementById('chat_log').innerHTML+= '<div id="new_message" class="chat_log_message"><p  class="chat_log_message_content"><span class="chat_log_name">'+
+				msg.name+'</span><br/>'+msg.content+'<p>'+p+'</p></div>'
+		this.autoScroll();
 	}
 	// handleKeypress(e){
 	// 	if (e.which == 13 && !e.shiftKey){
@@ -59,17 +74,12 @@ class Chat extends React.Component {
 	//       document.getElementById("chat_textarea").getDOMNode().dispatchEvent(new Event("submit"));
 	//     }
 	// }
-	componentDidUpdate(){
-		this.autoScroll();
-	}
+	// componentDidUpdate(){
+	// 	this.autoScroll();
+	// }
 	submitMessage(event){
 		event.preventDefault();
 		this.props.dispatch(msg.submitMessage(this.refs.mess.value));
-		// let newMessage = this.state.message.slice();
-		// newMessage.push({
-		// 	name: this.props.userName,
-		// 	content: this.refs.mess.value
-		// })
 		//send and store messages via REST API
 		fetch('/send',{
 			method: 'POST',
@@ -98,13 +108,20 @@ class Chat extends React.Component {
 		this.state.socket.emit("new-message",{
 			name: this.props.userName,
 			content: this.refs.mess.value,
+			location: this.props.userLocation
 		});
 		this.refs.mess.value = "";
 	}
 
 	autoScroll(){
-		let dummy = document.getElementById('dummy_div');
+		let dummy = document.getElementById("new_message");
 		dummy.scrollIntoView();
+		dummy.removeAttribute("id")
+	}
+	showLocation(){
+			return(
+				<span>{this.props.userLocation}</span>
+			)
 	}
 	logMessage(name,content,i){
 		if(!name){
@@ -130,7 +147,6 @@ class Chat extends React.Component {
 	}
 	render(){
 		let messages = this.state.message;
-		// console.log(this.state.message);
 		return(
 			<div className="chat">
 				<div className="chat_log" id="chat_log">
@@ -140,7 +156,7 @@ class Chat extends React.Component {
 					<div id="dummy_div"></div>
 				</div>
 				<form className="chat_textarea" onSubmit={this.Submit} id="chat_textarea">
-					<input ref="mess" placeholder="text message"/>
+					<input ref="mess" placeholder="text message" />
 					<Button
 						bsStyle="primary"
 						bsSize="small"

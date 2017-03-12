@@ -1,5 +1,14 @@
 'use strict'
 var Datastore = require('nedb');
+var extIP = require('external-ip');
+var where = require('node-where');
+
+var getIP = extIP({
+    replace: true,
+    services: ['http://ifconfig.co/x-real-ip', 'http://ifconfig.io/ip'],
+    timeout: 600,
+    getIP: 'parallel'
+});
 
 function REST (router,db,hosting_ip){
 	var self = this;
@@ -25,10 +34,30 @@ REST.prototype.handleRoutes = function(router,db,hosting_ip){
 	})
 	//===load data from database file===/
 	router.post("/get",function(req,res){
+
 		db.find({},function(err,doc){
 			// console.log(err,doc);
 			res.json({"doc":doc,"host":hosting_ip,"IP":req.ip});
 		})
+	})
+	//===get location===//
+	router.post("/location",function(req,res){
+		getIP(function (err, ip) {
+			if (err) {
+				// every service in the list has failed
+				throw err;
+			}
+			console.log(ip);
+		   where.is(ip,function(err,result){
+			   if(result){
+				   let location = result.get('postalCode')+" "+result.get('city')+","
+				   		+result.get('country')
+				   console.log(location);
+				   res.json({"location":location});
+			   }
+		   })
+		});
+
 	})
 }
 module.exports = REST;

@@ -21,3 +21,9 @@ export function changeName(){
 		type: 'CHANGE_NAME'
 	}
 }
+export function getLocation(location){
+	return{
+		type: 'GET_LOCATION',
+		payload: location
+	}
+}

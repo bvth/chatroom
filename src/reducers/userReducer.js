@@ -3,6 +3,8 @@ export default function reducer(state={
 	submitName:false,
 	auto: false,
 	changeName:false,
+	location: null,
+	getLocation: true
 },action){
 
 	switch (action.type){
@@ -34,6 +36,13 @@ export default function reducer(state={
 				name: null,
 				submit: false,
 				change: true
+			}
+		}
+		case "GET_LOCATION":{
+			return{
+				...state,
+				location: action.payload,
+				getLocation: true
 			}
 		}
 	}

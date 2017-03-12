@@ -10,8 +10,9 @@ require ('../style/sidebar.scss')
 function mapStateToProps(store){
 	return{
 		userName: store.user.name,
-		userSubmit: store.user.submit,
+		userSubmit: store.user.submitName,
 		nameGen: store.user.auto,
+		userLocation: store.user.location
 	}
 }
 
@@ -35,22 +36,72 @@ class Sidebar extends React.Component {
 	changeName(){
 		this.props.dispatch(user.changeName());
 	}
-	render(){
+	userName(){
 		if(!this.props.userName){
 			return (
-				<div className='sidebar'>
 					<form className="sidebar_form" onSubmit={this.submitName.bind(this)}>
 						<input ref="name" type="text" placeholder="your name" />
 						<Button bsStyle="info" bsSize="sm" type="submit">Save name</Button>
 					</form>
+			)
+		}
+		else{
+			return (
+				<div className="sidebar_hold">
+					<span className="sidebar_hold_name">{this.props.userName}</span>
+					<Button bsStyle="success" bsSize="xs" onClick={this.changeName.bind(this)}>Change name</Button>
 				</div>
 			)
 		}
-		console.log(this.props);
+	}
+	locationButton(){
+		if(!this.props.userLocation){
+			return(
+				<div className="sidebar_location">
+					<Button bsStyle="warning" bsSize="xs" onClick={this.getLocation.bind(this)}>Show location</Button>
+				</div>
+			)
+		}
+		else{
+			return(
+				<div className="sidebar_location">
+					{this.props.userLocation}
+				</div>
+			)
+		}
+	}
+
+	getLocation(){
+		// let pos;
+	    // navigator.geolocation.getCurrentPosition(
+		// 	(position)=>{
+		// 		var lat = position.coords.latitude;
+		// 		var lng = position.coords.longitude;
+		// 		fetch("https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+lng+"",
+		// 			{method: 'POST'})
+		// 			.then(function(res){
+		// 				return res.json();
+		// 			}).then((body)=>{
+		// 				this.props.dispatch(user.getLocation(body.results[2].formatted_address));
+		// 				console.log(this.props.userLocation);
+		// 			})
+		// 	},
+		// 	(error)=>alert(JSON.stringify(error))
+		// );
+		fetch("/location",{method:'POST'})
+			.then(function(res){
+				return res.json()
+			}).then((body)=>{
+				console.log(body.location);
+				this.props.dispatch(user.getLocation(body.location));
+			})
+	}
+
+	render(){
 		return(
-			<div className='sidebar'>
-				<span className="sidebar_name">{this.props.userName}</span><br/>
-				<Button bsStyle="success" bsSize="xs" onClick={this.changeName.bind(this)}>Change name</Button>
+			<div className="sidebar">
+				{this.userName()}
+				{this.locationButton()}
 			</div>
 		)
 	}
