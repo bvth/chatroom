@@ -9,6 +9,7 @@ const webpackConfig = require('./webpack.config');
 const compiler = webpack(webpackConfig);
 const path = require('path');
 var rest = require('./rest.js');
+var where = require('node-where')
 
 var Datastore = require('nedb');
 var db = new Datastore({filename: 'chatLog.db',autoload:true});
@@ -26,8 +27,6 @@ app.use(express.static(path.join(__dirname, 'public'), {
 
 app.get('*', function(req, res, next) {
   console.log('Request: [GET]', req.originalUrl)
-  // console.log(req);
-  // res.json({"Error" : true, "Message" : "Error executing MySQL query"});
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 //===get hosting IP===//
@@ -48,7 +47,6 @@ Object.keys(ifaces).forEach(function (ifname) {
       console.log(ifname + ':' + alias, iface.address);
     } else {
       // this interface has only one ipv4 adress
-    //   console.log(ifname, iface.address);
       hosting_ip = iface.address;
     }
     ++alias;
@@ -72,16 +70,26 @@ REST.prototype.configureExpress = function() {
 
 io.on('connection', function(socket){
 	console.log("connected");
-    var clientIpAddress= socket.request.socket.remoteAddress;
+    //===get location by external IP===//
+    var address = socket.handshake.address;
+    console.log("New", address);
+    var location;
+    where.is(address,function(err,result){
+        if(result){
+            let location = result.get('postalCode')+" "+result.get('city')+","
+                 +result.get('country')
+            console.log(location);
+        }
+    })
+    //===end===//
 	socket.on('new-message',function(msg){
 		console.log(msg);
-		io.emit('receive-message',msg,clientIpAddress);
+		io.emit('receive-message',msg);
 	})
   socket.on('test',function(){
     console.log("mounted");
   })
 });
-
 const PORT = process.env.PORT || 3000;
 
 REST.prototype.startServer = function() {
