@@ -14,7 +14,8 @@ function mapStateToProps(store){
 		userName: store.user.name,
 		userSubmit: store.user.submitName,
 		nameGen: store.user.auto,
-		userLocation: store.user.location
+		userLocation: store.user.location,
+		changeName: store.user.changeName
 	}
 }
 
@@ -22,9 +23,11 @@ class Sidebar extends React.Component {
 	componentWillMount(){
 		this.generateName();
 	}
-	submitName(){
+	submitName(event){
+		event.preventDefault();
 		this.props.dispatch(user.submitName(this.refs.name.value));
 		console.log(this.props);
+		return false;
 	}
 	generateName(){
 		let nameArray=[];
@@ -37,6 +40,7 @@ class Sidebar extends React.Component {
 	}
 	changeName(){
 		this.props.dispatch(user.changeName());
+		console.log(this.props);
 	}
 	userName(){
 		if(!this.props.userName){

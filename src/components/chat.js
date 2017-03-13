@@ -38,8 +38,6 @@ class Chat extends React.Component {
 					newMessage.push({'name':body.doc[i].name, 'content':body.doc[i].content})
 				)
 				this.setState({message : newMessage,socket:io.connect('http://'+body.host+':3000')})
-				// console.log("hosting IP "+body.host);
-				// console.log(body.IP);
 			})
 	}
 	componentDidMount(){
@@ -86,6 +84,8 @@ class Chat extends React.Component {
 			location: this.props.userLocation
 		});
 		this.refs.mess.value = "";
+		console.log(this.props);
+		return false;
 	}
 
 	autoScroll(){

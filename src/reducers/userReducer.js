@@ -13,6 +13,7 @@ export default function reducer(state={
 				...state,
 				name: action.payload,
 				submit:true,
+				changeName:false,
 				auto:false
 			}
 		}
@@ -35,7 +36,7 @@ export default function reducer(state={
 				...state,
 				name: null,
 				submit: false,
-				change: true
+				changeName: true
 			}
 		}
 		case "GET_LOCATION":{
